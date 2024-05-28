@@ -317,6 +317,8 @@ And once the CALLSTACK of Global Execution Context will empty Event Loop will se
 */
 
 //   -------    SNIPPET - 15   [Higher Order Function]    -----------
+//  A “higher-order function” is a function that accepts functions as parameters and/or returns a function.
+// Example 1
 var radiusArr = [1, 2, 3, 4];
 
 function Area(radius) {
@@ -326,12 +328,27 @@ function Area(radius) {
 var calculate = function (radiusArr, Operation) {
   var res = [];
   var len = radiusArr.length;
-  for (var i = 0; i < len; i++) res.push(Operation(radiusArr[i])); //  Area(radiusArr[i])
+  for (var i = 0; i < len; i++)
+    res.push(Operation(radiusArr[i])); //  Area(radiusArr[i])
 
   return res;
 };
 
 console.log(calculate(radiusArr, Area)); // Higher Order Function
+
+
+// Example 2
+function nestedfunc() {
+  console.log("this is nestedfunc");
+}
+
+function hof(func) {
+  console.log("this is original func");
+  func();
+}
+
+hof(nestedfunc);
+
 
 //   -------    SNIPPET - 16 (IMP 📍)  -----------
 const obj = {
