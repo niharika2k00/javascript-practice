@@ -18,45 +18,6 @@ message = "The variable Has been hoisted";
   background: rgba(238, 238, 238, 0.116);
 } */
 
-var memoizedFunc = (func) => {
-  const cache = {};
-  return function (...args) {
-    console.log(args);
-    var argsCache = JSON.stringify(args); // [2312, 1029]
-
-    if (!cache[argsCache]) {
-      cache[argsCache] = func.call(this, ...args);
-    } else return cache[argsCache];
-  };
-};
-
-// var memoizedFunc = (func, params) => {
-//   const res = {};
-//   return function (...args) {
-//     console.log(args);
-//     var argsCache = JSON.stringify(args); // [2312, 1029]
-
-//     if (!res[argsCache]) {
-//       res[argsCache] = func.apply(params || this, ...args);
-//     } else return res[argsCache];
-//   };
-// };
-
-const messyFunc = (num1, num2) => {
-  for (var i = 0; i <= 1000000000; i++) {}
-  return num1 * num2;
-};
-
-const result = memoizedFunc(messyFunc);
-
-console.time("First func call");
-console.log(result(2312, 1029));
-console.timeEnd("First func call");
-
-console.time("Second func call");
-console.log(result(2312, 1029));
-console.timeEnd("Second func call");
-
 function greet() {
   console.log(`Hello, my name is ${this.name}`);
 }

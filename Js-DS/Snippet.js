@@ -1,23 +1,25 @@
-//   -------    SNIPPET - 0   -----------
+//   -------    SNIPPET - 0  [ let vs var in setTimeout ]  -----------
+
+// ✅ let → block scoped → new `i` binding per iteration
 for (let i = 0; i < 5; i++) {
   setTimeout(function () {
     console.log(i);
   }, i * 1000);
 }
+// Output: 0 1 2 3 4
 
-/*   Output : 0 1 2 3 4
-
-        This is bcz of the presence of Let instead of Var.
-        As let is a Blocked Scoped thus it changes.
-*/
-
+// ❌ var → function scoped → all callbacks share the same `i`
+// by the time they fire, loop is done → i = 5
 for (var i = 0; i < 5; i++) {
   setTimeout(() => {
     console.log(i);
   }, 1000);
 }
+// Output: 5 5 5 5 5
 
-//   -------    SNIPPET - 1   -----------
+//   -------    SNIPPET - 1  [ Closure + let mutation in loop ]  -----------
+// fun() increments i before setTimeout fires, then decrements after print
+// let is block-scoped to the for loop → shared across iterations
 function a() {
   for (let i = 0; i < 3; i++) {
     function fun() {
@@ -31,11 +33,12 @@ function a() {
   }
 }
 
-a(); // function invocation
+a();
+// Output: 1 3
 
-//  Output : 1 3
-
-//   -------    SNIPPET - 2   -----------
+//   -------    SNIPPET - 2  [ Closure — captures reference, not value ]  -----------
+// fun() closes over the OUTER `let i = 0` (global-ish), NOT the for-loop's `let i`
+// All 3 calls share the same outer i → incremented 3 times before setTimeout fires
 let i = 0;
 function fun() {
   i++;
@@ -45,224 +48,235 @@ function fun() {
 }
 
 for (let i = 0; i < 3; i++) {
+  // this `i` is a separate block-scoped variable
   fun();
 }
+// Output: 3 2 1
+// WHY: closure holds a REFERENCE to outer i, not a copy.
+//      All 3 setTimeout callbacks share the same outer i (=3 by the time they fire),
+//      then each call decrements it → 3, 2, 1
 
-/*    Output : 3 2 1
-      Because of Closure. Block Scope of function func() is Global.
-      So it just access the i variable Globally not the let inside for loop.
-
-      If i is passed from the for loop then it will be  1 2 3 as in that case. See the next snippet.
-
-      CLOSURE:
- Closure is the function with its own lexical environment which executes separately. And it remembers the reference to i, ❌ the value of i.
- Hence, while using loop var 0-5, first time it refers to i=0 block in the memory and in the meantime the loop runs from 0-5 then i value
- changes to 6. Then the  settimeout func also completes and get i=6 at that memory reference.
- So it prints 6 multiple times.
-*/
-
-//   -------    SNIPPET - 3   -----------
+//   -------    SNIPPET - 3  [ Argument passing creates a COPY ]  -----------
+// i is passed as argument → each call gets its own local copy → no shared reference
 function fun(i) {
   i++;
   setTimeout(() => {
     console.log(i--);
-  }, 400);
+  }, 1000);
 }
 
 for (let i = 0; i < 3; i++) {
-  fun(i);
+  fun(i); // passes 0, 1, 2 as separate copies
 }
-//  Output :    1 2 3
+// Output: 1 2 3
 
-//   -------    SNIPPET - 4   ( IIFE )  -----------
-// IIFE (IMMEDIATELY INVOKED FUNCTION EXPRESSION)
+// ⚠️ var + shared reference → race condition
+var i = 0;
+function fun() {
+  i++;
+  setTimeout(() => {
+    console.log(i--);
+  }, 1000);
+}
+
+for (i = 0; i < 3; i++) {
+  fun();
+}
+// Output: 4 3  (fun increments i to 4 before loop ends, then callbacks fire)
+
+//   -------    SNIPPET - 4  [ IIFE — variable scope ]  -----------
+// IIFE: Immediately Invoked Function Expression → runs once, creates own scope
+
+// var a = (b = 42) → b is implicitly global (no var/let), a is function-scoped
 (function () {
-  var a = (b = 42);
+  var a = (b = 42); // b leaks to global, a stays local
 })();
 
-console.log(b);
-console.log(typeof b);
-console.log(typeof a);
-console.log(a);
+console.log(b); // 42        — b is global
+console.log(typeof b); // "number"
+console.log(typeof a); // "undefined" — a not in scope, typeof won't throw
+console.log(a); // ReferenceError: a is not defined
 
-/* Output :
-42
-number
-undefined
-not defined
-*/
-
+// catch block scope: var is function-scoped (not catch-scoped)
+// x declared with var inside catch → hoisted to IIFE function scope
 (function () {
   try {
     throw new Error();
   } catch (x) {
     var x = 1,
-      y = 2;
-    console.log(x);
+      y = 2; // var x hoisted to function scope; y too
+    console.log(x); // 1
   }
-  console.log(x);
-  console.log(y);
+  console.log(x); // undefined — var x exists but catch param shadowed it; now undefined
+  console.log(y); // 2 — var y hoisted to function scope
 })();
+// Output: 1 → undefined → 2
 
-/* Output :
-1
-undefined
-2
-
-        Explanation :
-  variable a is function scoped so its available Locally in the function Execution Context
-  Whereas variable b is not declared in function scope so by default its being declared in the GLOBAL EXECUTION Context.
-*/
-
+// IIFE returning a value via inner arrow function
 function aa() {
   return (() => 0)();
 }
 console.log(aa()); // 0
 
-//   -------    SNIPPET - 5   -----------
+//   -------    SNIPPET - 5  [ IIFE fix for var + setTimeout ]  -----------
+
+// ❌ var is function-scoped → all callbacks close over the same i
+// loop finishes (i=5) before any setTimeout fires
 for (var i = 0; i < 5; i++) {
   setTimeout(function () {
-    console.log(i);
+    console.log(i); // shared reference → always 5
   }, i * 1000);
 }
+// Output: 5 5 5 5 5
 
-//  Output : 5 5 5 5 5 5
-
+// ✅ IIFE wraps each iteration → argument x is a COPY of i at that moment
 function fun() {
   for (var i = 0; i < 5; i++) {
     (function (x) {
+      // x = 0,1,2,3,4 — new scope per iteration
       setTimeout(function () {
-        console.log(x);
+        console.log(x); // own copy, unaffected by i changing
       }, x * 1000);
     })(i);
   }
 }
 
 fun();
+// Output: 0 1 2 3 4
+// 📌 Key: passing i as argument creates a VALUE COPY in x → closure over x, not i
 
-//  Output : 0 1 2 3 4
+//   -------    SNIPPET - 6  [ typeof, comparison chaining, ASI ]  -----------
 
-//   -------    SNIPPET - 6   -----------
-console.log(typeof typeof 1); // String
-// typeof 1 will return "number" and typeof "number" will return string.
+// typeof always returns a string → typeof of any string = "string"
+console.log(typeof typeof 1); // "string"  →  typeof 1 = "number", typeof "number" = "string"
 
-console.log(1 < 2 < 3); // 1 < 2 yes  => 1 < 3  yes =>  TRUE  =>  1
-console.log(3 > 2 > 1); // 3 > 2 yes  =>  1 > 3  NO  =>   FALSE  => 0
+// Comparison operators are left-to-right; result of first (boolean) feeds into second
+console.log(1 < 2 < 3); // true  → (1<2)=true → true<3 → 1<3 → true
+console.log(3 > 2 > 1); // false → (3>2)=true → true>1 → 1>1 → false
 
+// ✅ object on same line as return → returned correctly
 function foo1() {
   return {
     bar: "hello",
   };
 }
+console.log(foo1()); // { bar: "hello" }
 
+// ❌ ASI (Automatic Semicolon Insertion) inserts `;` after `return`
+// everything below return is dead code
 function foo2() {
-  return;
+  return; // ← ASI adds semicolon here → returns undefined
   {
     bar: "hello";
   }
 }
+console.log(foo2()); // undefined
 
-//   -------    SNIPPET - 7   -----------
-//  Outer Function
+//   -------    SNIPPET - 7  [ Closure — returning inner function ]  -----------
+// y() closes over x()'s scope → even after x() finishes, y still has access to b
 function x() {
   var a = 200,
     b = 500;
 
-  //  Inner Function
   function y() {
-    console.log("Value coming due to Lexical Environment : ", b);
+    console.log("Lexical scope access:", b); // b = 500, from x's scope
   }
 
-  // y();
-  return y;
+  return y; // return function reference, not invocation
 }
 
-var closure = x();
-console.log(closure);
-closure();
+var closure = x(); // x() runs and returns y; x's execution context is gone
+console.log(closure); // [Function: y]
+closure(); // still logs 500 — closure preserved x's scope
 
-// x()();   // call inenr func
+x()(); // same: create + immediately invoke inner function
 
-//   -------    SNIPPET - 8 [NOTATIONS]   -----------
-// Function Statement aka Function Declaration
+//   -------    SNIPPET - 8  [ Function Notations ]  -----------
+
+// 1. Function Declaration — hoisted fully, can be called before definition
 function a() {
   console.log("Hello");
 }
 a();
 
-// Function Expression
+// 2. Function Expression — assigned to var; NOT hoisted (var is, but value isn't)
 var b = function () {
   console.log("Hello");
 };
 b();
 
-// Named Function
+// 3. Named Function Expression — name (abc) accessible only inside the function body
 var c = function abc() {
   console.log("Named Function");
 };
-c();
+c(); // ✅ works via variable c
+// abc() // ❌ ReferenceError — abc not in outer scope
 
-//  First Class Function
-// If functions is treated like other variables.So the functions can be assigned to any other variable OR PASSED AS AN ARGUEMENT & RETURNED by another function.
+// 4. First-Class Function — functions treated as values: assign, pass, return
 var d = function (param) {
   return function abc(param) {
-    var xp = 01;
+    // returns a function
+    var xp = 1;
     console.log(param + xp);
   };
 };
 
-console.log(d("Dev"));
+console.log(d("Developer")); // logs the inner function reference
 
-//   -------    SNIPPET - 9   -----------
+//   -------    SNIPPET - 9  [ Event Loop — callback queue vs call stack ]  -----------
+// setTimeout goes to Web API → callback queue → runs AFTER call stack is empty
 setTimeout(() => {
   console.log("Inside Timer");
 }, [5000]);
 
+// x() is sync → goes on call stack immediately → y() called inline
 function x(y) {
   console.log("Inside X");
-  y();
+  y(); // callback invoked synchronously inside x
 }
 
 x(function y() {
   console.log("Y");
 });
 
-/*
-    Inside X
-    Y
-    Inside Timer
-*/
+// Output:
+// Inside X      ← sync
+// Y             ← sync (callback passed to x, called immediately)
+// Inside Timer  ← async (after 5s, from callback queue)
 
-//   -------    SNIPPET - 10   -----------
-// Const --> Block scope
-// Let  -->  Script scope
-var b = 10;
+//   -------    SNIPPET - 10  [ Block scope: var vs let/const ]  -----------
+// var → global/function scoped; let/const → block scoped — different scope levels
+var a = 22;
+let b = 44; // Script scope
 {
-  let a = 100;
-  var b = 45;
-  const c = 78;
+  var a = 100; // Global scope; even though 'a' is also inside block{...}
+  let b = 200; // Block scope
+  const c = 300; // Block scope
 
-  console.log(a);
-  console.log(b);
-  console.log(c);
+  console.log(a); // 100
+  console.log(b); // 200 ← Block scoped 'b'
+  console.log(c); // 300
 }
+console.log(a, b); // 100 44 ← Script scoped 'b'
 
-console.log("Outer ", b);
-console.log("Inner ", a);
-
-//   -------    SNIPPET - 11   -----------
+//   -------    SNIPPET - 11  [ Hoisting — var undefined vs let ReferenceError ]  -----------
+// var: hoisted + initialized undefined; let: TDZ → ReferenceError before declaration
 var c = 21;
 var girl = function () {
-  console.log(c); // undefined
+  console.log(c); // undefined — var c hoisted but not yet assigned
   var c = 20;
 };
 girl();
 
-// Output : undefined
+var c = 21;
+var girl = function () {
+  console.log(c); // ReferenceError — let is in TDZ, not initialized
+  let c = 20;
+};
+girl();
 
-//   -------    SNIPPET - 12   -----------
-//  Using REDUCE func(), display the name of the characters whose age < 30.
-//  [ ] initial value in syntax.
+//   -------    SNIPPET - 12  [ Array.reduce() — filter + map in one pass ]  -----------
+// reduce(callback, initialValue) → accumulate acc across all elements
 const users = [
   {
     name: "Oswald",
@@ -290,7 +304,8 @@ const result = users.reduce((acc, currValue) => {
 
 console.log("Result : ", result);
 
-//   -------    SNIPPET - 13   [Obj.freeze()  make the properties immutable]  -----------
+//   -------    SNIPPET - 13  [ Object.freeze() — shallow immutability ]  -----------
+// freeze() prevents property modification; throws in strict mode, silently fails otherwise
 const obj = {
   prop: 42,
 };
@@ -298,7 +313,8 @@ Object.freeze(obj);
 obj.prop = 33; // Throws an error in strict mode
 console.log(obj.prop); // expected output: 42
 
-//   -------    SNIPPET - 14   -----------
+//   -------    SNIPPET - 14  [ Event loop — setTimeout(0) deferred after sync code ]  -----------
+// setTimeout(0) goes to callback queue → fires AFTER all sync code completes
 console.log("Before");
 
 setTimeout(() => {
@@ -307,17 +323,13 @@ setTimeout(() => {
 
 console.log("After");
 
-/*
-Before
-Inside SetTimeOut
-After
+// Output:
+// Before
+// After
+// Inside SetTimeOut  ← setTimeout(0) still deferred to next event loop tick
 
------   This is bcz once the parser enters into the setTimeOut snippet, it will put into MacroTask Queue/CallBack Queue.
-And once the CALLSTACK of Global Execution Context will empty Event Loop will send the setTimeOut operation into the CallStack.
-*/
-
-//   -------    SNIPPET - 15   [Higher Order Function]    -----------
-//  A “higher-order function” is a function that accepts functions as parameters and/or returns a function.
+//   -------    SNIPPET - 15  [ Higher Order Function ]  -----------
+// A function that accepts functions as parameters and/or returns a function
 // Example 1
 var radiusArr = [1, 2, 3, 4];
 
@@ -328,14 +340,12 @@ function Area(radius) {
 var calculate = function (radiusArr, Operation) {
   var res = [];
   var len = radiusArr.length;
-  for (var i = 0; i < len; i++)
-    res.push(Operation(radiusArr[i])); //  Area(radiusArr[i])
+  for (var i = 0; i < len; i++) res.push(Operation(radiusArr[i])); //  Area(radiusArr[i])
 
   return res;
 };
 
 console.log(calculate(radiusArr, Area)); // Higher Order Function
-
 
 // Example 2
 function nestedfunc() {
@@ -349,15 +359,15 @@ function hof(func) {
 
 hof(nestedfunc);
 
-
-//   -------    SNIPPET - 16 (IMP 📍)  -----------
+//   -------    SNIPPET - 16  [ this — arrow vs regular function ]  -----------
+// arrow function inherits `this` from enclosing lexical scope (not the calling object)
 const obj = {
   name: "John",
   mystry: function () {
     const nestedObj = {
       name: "Fizz",
       logName: () => {
-        console.log(this.name);
+        console.log(this.name); // `this` = outer obj (John), NOT nestedObj (Fizz)
       },
     };
 
@@ -365,39 +375,26 @@ const obj = {
   },
 };
 
-obj.mystry(); //  John
-/*      Bcz arrow function takes the "this" scope of parent i.e window object.
-  If its function() {...}  then it would have been Fizz.
-*/
+obj.mystry(); // John — arrow fn uses `this` from mystry's scope (obj)
+// if logName were function() {...}, `this` would be nestedObj → "Fizz"
 
 var mom_name = "Bobby";
 
 const parent = {
   mom_name: "Chimpu",
   mother: () => {
-    mom_name = "Lorry";
-    return `${this.mom_name} is my mother.`;
+    mom_name = "Lorry"; // modifies global mom_name (no `this.` prefix)
+    return `${this.mom_name} is my mother.`; // `this` = global/window → undefined
   },
 };
 
 console.log(parent.mother());
-
-/*
-https://www.section.io/engineering-education/how-to-use-javascript-arrow-functions-and-this-keyword/
-function() {...}
-   "this" represents an object that executes the current function, by the function execution context. It refers to a global object window.
-Denotes the parent and refers to the context where the anonymous function is called.
-
-
-() => {...}
-refers to the scope[Global Object] where the function(the enclosing context) is present.
-*/
+// arrow fn `this` = global scope → this.mom_name is undefined (strict) or window.mom_name
 
 const cart = ["dress", "shoes", "laptop", "softtoy"];
-/*
-  passing a func[risky DND]
-  This leads to CallBack Hell, so without depending on other func. just attach 2nd func to the result of the 1st
- */
+
+//   -------    SNIPPET - 17  [ Callback Hell — nested callbacks ]  -----------
+// each async step depends on the previous → deeply nested, hard to read/maintain
 createOrder(cart, function (orderId) {
   proceedToPayment(orderId);
 });
@@ -408,11 +405,8 @@ createOrder(cart, function (orderId) {
   });
 });
 
-
-// ----------------------------------------
-            PROMISE CHAINING  ✅✅
-// ----------------------------------------
-
+//   -------    SNIPPET - 18  [ Promise Chaining ]  -----------
+// .then() returns a new promise → chain instead of nest; .catch() handles any rejection
 var id = "demo@6";
 const promise = isValid(id);
 
@@ -461,28 +455,8 @@ function promise1(info) {
   return null;
 }
 
-
-
-
-var a = 100; // this var will be shadowed
-let b = 200; // this will be shadowed (script scoped)
-const c = 300;
-{
-  var a = 10; // now a points to 10
-  let b = 20; // block scoped so its totally a different variable
-  const c = 30;
-  console.log(a);
-  console.log(b);
-  console.log(c);
-}
-console.log(a); // so this also ouputs 10 regardless of block scope
-console.log(b); // will ouput 200
-console.log(c); // will ouput 300
-
-
-// -----------------------------------------------------
-//        Implement Caching / Memoize Function
-// -----------------------------------------------------
+//   -------    SNIPPET - 19  [ Memoization — cache expensive fn results ]  -----------
+// cache results by stringified args → skip recomputation on repeated calls
 var memoizedFunc = (func, params) => {
   const res = {};
   return function (...args) {
@@ -507,6 +481,5 @@ console.log(result(2312, 1029)); // messyFunc(num1, num2)
 console.timeEnd("First func call");
 
 console.time("Second func call");
-console.log(result(2312, 1029));
+console.log(result(2312, 1029)); // cache hit → instant
 console.timeEnd("Second func call");
-
