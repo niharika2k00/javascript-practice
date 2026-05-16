@@ -1,14 +1,13 @@
-/*             List of Polyfills 
+/*             List of Polyfills
             ------------------------
 
     1) For Each
-    2) Filter  
-    3) Map 
-    4) Reduce 
-    5) Bind 
+    2) Filter
+    3) Map
+    4) Reduce
+    5) Bind
     6) SetTimeOut
     7) SetInterval 
-
 */
 
 const arr = ["Charles", "Lucifer", "Harry", "Jack"];

@@ -13,7 +13,7 @@ myMap.set(keyFunc, "value associated with keyFunc");
 console.log("Size of the Map in Javascript : ", myMap.size); // 3
 
 // getting the values
-console.log(myMap.get(keyString)); //  .get(keyObj)  get(keyFunc)
+console.log(myMap.get(keyString)); // .get(keyObj)  .get(keyFunc)
 
 console.log(myMap.get("a string"));
 console.log(myMap.get(keyObj)); //  correct
