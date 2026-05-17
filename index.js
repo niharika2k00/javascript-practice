@@ -178,12 +178,12 @@ firstElementChild
 */
 
 // OnChange Event          https://www.w3schools.com/jsref/event_onchange.asp
-<input type="text" onchange="myFunction()" />;
+// <input type="text" onchange="myFunction()" />;
 object.onchange = function () {};
 object.addEventListener("change", () => {});
 
 // OnKeyPress Event
-<input type="text" onkeypress="myFunction()" />;
+// <input type="text" onkeypress="myFunction()" />;
 object.onkeypress = function () {};
 object.addEventListener("keypress", () => {});
 
