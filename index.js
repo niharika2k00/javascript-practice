@@ -1,5 +1,9 @@
 console.log("Welcome to the Javascript World.");
 
+var message;
+console.log(message); // undefined
+message = "The variable Has been hoisted";
+
 const BoxMainDiv = document.getElementById("container");
 var box1 = document.querySelector(".box1");
 var box2 = document.querySelector(".box2");
@@ -9,18 +13,17 @@ var box4 = document.querySelector(".box4");
 var effectBox = document.querySelector(".effector");
 var inputBox = document.querySelector("#input");
 
+// document.querySelector(".box1", ".box2").style.backgroundColor = "black";
+
 let numberOfChildren = BoxMainDiv.childElementCount;
-console.log(
-  "Number of Children inside the main box div ==> ",
-  numberOfChildren
-); //  OR  .children.length
+console.log("Number of Children inside the main box div: ", numberOfChildren); //  OR  .children.length
 
 console.log(
-  "Current Node  => ",
+  "Current Node: ",
   effectBox.nodeName,
-  "ParentNode => ",
+  "ParentNode: ",
   effectBox.parentNode,
-  "Classname extracted using func ==> ",
+  "Classname extracted using func: ",
   effectBox.className
 );
 
@@ -48,10 +51,7 @@ document.getElementById("demo").innerHTML = text;
 
 box2.addEventListener("click", function (event) {
   event.target.style.backgroundColor = "#ff595e";
-  console.log(
-    "Get Box Color from Inline Styling :  ",
-    event.target.style.backgroundColor
-  );
+  console.log("Get Box Color from Inline Styling :  ", event.target.style.backgroundColor);
 });
 
 //  GRAB the Style
@@ -128,8 +128,7 @@ const submitFunc = () => {
 };
 
 const clickFunc = () => {
-  window.location =
-    "https://stackoverflow.com/questions/52229901/navigate-to-route-on-button-click";
+  window.location = "https://stackoverflow.com/questions/52229901/navigate-to-route-on-button-click";
 };
 
 const changeSelect = (selectOption) => {
@@ -158,22 +157,41 @@ paraEle.classList.add("myStyle");
 paraEle.className = "myStyle";
 
 /*
-      var myImage = new Image(10, 10);
-      myImage.src = "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg";
-      // document.body.appendChild(myImage);
-      document.getElementById("main").appendChild(myImage);
+var myImage = new Image(10, 10);
+myImage.src = "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg";
+// document.body.appendChild(myImage);
+document.getElementById("main").appendChild(myImage);
 
-    Difference b/w Element vs Node :    https://www.w3schools.com/jsref/prop_node_parentelement.asp
+Difference b/w Element vs Node :    https://www.w3schools.com/jsref/prop_node_parentelement.asp
 
-    Difference b/w InnerHTML vs InnerText : https://www.w3schools.com/jsref/prop_node_innertext.asp
+Difference b/w InnerHTML vs InnerText : https://www.w3schools.com/jsref/prop_node_innertext.asp
 
-    element.addEventListener(event, function, useCapture) :       useCapture : BOOLEAN : event bubbling / event capturing. Add EVENTS to the Element.
+element.addEventListener(event, function, useCapture) :       useCapture : BOOLEAN : event bubbling / event capturing. Add EVENTS to the Element.
 
 
-    childElementCount  OR  children.length
-    childNodes
-    children
+childElementCount  OR  children.length
+childNodes
+children
 
-    firstChild
-    firstElementChild
+firstChild
+firstElementChild
+*/
+
+// OnChange Event          https://www.w3schools.com/jsref/event_onchange.asp
+<input type="text" onchange="myFunction()" />;
+object.onchange = function () {};
+object.addEventListener("change", () => {});
+
+// OnKeyPress Event
+<input type="text" onkeypress="myFunction()" />;
+object.onkeypress = function () {};
+object.addEventListener("keypress", () => {});
+
+/*
+// CURRENT DATE & TIME
+let currTime = new Date(Date.now());
+
+currTime.toDateString();        // 'Fri Jan 28 2022'
+currTime.toLocaleTimeString()   // '12:24:57 PM'
+currTime.toLocaleDateString();  // '1/28/2022'
 */
