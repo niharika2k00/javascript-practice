@@ -25,7 +25,8 @@ function fetchUser(userId) {
   });
 }
 
-// create promise
+// ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+// Create promise
 var sendBirthdayGift = () => {
   var giftPromise = new Promise((resolve, reject) => {
     const shouldSendGift = true;
@@ -38,7 +39,7 @@ var sendBirthdayGift = () => {
   return giftPromise;
 };
 
-// handle promise
+// Handle promise
 sendBirthdayGift()
   .then((gift) => {
     console.log("Gift received! Thanks", gift);
@@ -46,6 +47,7 @@ sendBirthdayGift()
   .catch((err) => {
     console.log(err);
   });
+// ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
 
 // Promise Chaining
 fetch("https://potterapi-fedeperin.vercel.app/en/houses")
@@ -65,15 +67,15 @@ fetch("https://potterapi-fedeperin.vercel.app/en/houses")
     console.log("Step 4 - Founder:", founder);
   })
   .catch((err) => {
-    console.log("Error caught:", err); // catches ANY error above
+    console.log("Error caught:", err); // catches error from above
   });
+// ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
 
 // fetch creates the promise
 // async/await handles it
 async function getHouses() {
   try {
     const response = await fetch("https://potterapi-fedeperin.vercel.app/en/houses");
-
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -87,6 +89,7 @@ async function getHouses() {
 
 getHouses();
 
+// ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
 // GET — fetch data
 fetch(url);
 
@@ -98,6 +101,39 @@ fetch(url, { method: "PUT", body: JSON.stringify(data) });
 
 // DELETE — remove data
 fetch(url, { method: "DELETE" });
+
+// ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+// Encounter an issue, suggest various ways to solve this
+// ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+function placeOrder() {
+  setTimeout(() => {
+    return Math.random() * 10 <= 5 ? "Bag" : "Shoe";
+  }, 2000);
+}
+
+let order = placeOrder();
+console.log("Order is for: " + order); // undefined ⁉️ ISSUE
+
+// To solve issue - we need to create Promise and handle this asynchronously .then() | async/await
+// Method 1:
+function placeOrder() {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      let item = Math.random() * 10 <= 5 ? "Bag" : "Shoe";
+      resolve(item);
+    }, 2000);
+  });
+}
+
+placeOrder()
+  .then((res) => console.log(`Order is for ${res}`))
+  .catch((err) => console.log(err));
+
+var getOrder = async () => {
+  const order = await placeOrder();
+  console.log("Order is for " + order); // ✅ Bag or Shoe
+};
+getOrder();
 
 // https://github.com/fedeperin/potterapi
 // https://potterapi-fedeperin.vercel.app/en/houses
