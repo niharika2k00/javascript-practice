@@ -1,4 +1,4 @@
-console.log("\n ******************** MAP PART ********************\n");
+console.log("\n ******************** MAP ********************\n");
 const myMap = new Map();
 
 const keyString = "a string";
@@ -25,10 +25,9 @@ map1.set("0", "zero");
 map1.set(1, "one");
 map1.set(2, "two");
 
-//  -------------         Map Iteration        -----------------
+// Ways to iterate [.values(), .keys(), .entries()]
 for (const key of map1.keys()) {
-  //  .values()
-  console.log(key); //  0  1  2
+  console.log(key); // 0 1 2
 }
 
 for (const [key, value] of map1.entries()) {
@@ -41,7 +40,7 @@ map1.forEach(function (value, key) {
 
 const hashMap = new Map([
   ["01", "C++"],
-  ["02", "C"],
+  ["02", "Python"],
   ["03", "Javascript"],
 ]);
 
@@ -52,3 +51,7 @@ for (const [key, value] of hashMap.entries()) {
 }
 
 console.log(hashMap.has("02"));
+
+// https://www.geeksforgeeks.org/javascript/javascript-map/
+
+
