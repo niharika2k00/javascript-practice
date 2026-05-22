@@ -1,4 +1,4 @@
-console.log("\n ********************  OBJECT ********************\n");
+console.log("\n___________ ⭐️📗 Object ___________\n");
 
 const student = {
   name: "Jack",
@@ -6,7 +6,7 @@ const student = {
   hobbies: ["reading", "guiter", "coding"],
 };
 
-// Ways to iterate
+// ways to iterate [.values(), .keys(), .entries()]
 for (let [key, value] of Object.entries(student)) {
   console.log(key + " - " + value);
 }
@@ -30,6 +30,6 @@ Object.keys(student).forEach((key) => {
   console.log(key);
 });
 
-Object.entries(student).map((item) => {
+Object.entries(student).map((item, idx) => {
   console.log(item, "key: ", item[0], "value: ", item[1]);
 });

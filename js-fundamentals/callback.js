@@ -1,3 +1,4 @@
+console.log("\n___________ ⭐️📗 Callback ___________\n");
 // A callback is a function passed as an argument to another function
 
 function myFunction(callback) {
@@ -22,7 +23,7 @@ myFunction((info) => {
 // setTimeout(clearInterval, 5000, interval); // shorthand
 // setTimeout(greet, 1000, "Alice", "Engineer"); // ✅ short form
 
-//  ⚠️ Note: setTimeout / setInterval function automatically called
+// ⚠️ Note: setTimeout / setInterval function automatically called
 
 function greet(name, profession) {
   console.log(`Hello, this is ${name} a ${profession}.`);

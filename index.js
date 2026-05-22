@@ -195,3 +195,39 @@ currTime.toDateString();        // 'Fri Jan 28 2022'
 currTime.toLocaleTimeString()   // '12:24:57 PM'
 currTime.toLocaleDateString();  // '1/28/2022'
 */
+
+// const countDisplay = document.getElementById("count");
+// const btn = document.getElementById("increment-btn");
+
+// btn.addEventListener("click", () => {
+//   count++;
+//   countDisplay.textContent = count;
+//   console.log("count:", count);
+// });
+
+// ✅ Just use it directly!
+// fetch("https://potterapi-fedeperin.vercel.app/en/houses")
+//   .then((res) => res.json())
+//   .then((data) => console.log(data))
+//   .catch((err) => console.log(err));
+
+// function task(message) {
+//   return new Promise((resolve) => {
+//     console.log(message);
+//     resolve();
+//   });
+// }
+
+var myObject = {
+  foo: "bar",
+  func: function () {
+    var self = this;
+    console.log("outer func:  this.foo = " + this.foo);
+    console.log("outer func:  self.foo = " + self.foo);
+    (function () {
+      console.log("inner func:  this.foo = " + this.foo);
+      console.log("inner func:  self.foo = " + self.foo);
+    })();
+  },
+};
+myObject.func();

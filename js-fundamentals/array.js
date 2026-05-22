@@ -1,6 +1,5 @@
-// -----------------------------------------------------------
-//               ARRAY  ITERATION      https://www.w3schools.com/js/js_array_iteration.asp
-// -----------------------------------------------------------
+console.log("\n___________ ⭐️📗 Array ___________\n");
+
 // every ()  :  array.every(function(currentValue, index, arr), thisValue)
 var num = [2, 45, -100, 96, -32];
 console.log("Result of every()  =>  ", num.every(allPositive)); //  false
