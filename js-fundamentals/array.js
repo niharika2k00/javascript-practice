@@ -6,7 +6,7 @@ var arr = ["mango", "apple", "lichi", "lemon", "custard"];
 var num = [22, 18, 264, 6, 43, 58, 102];
 
 console.log(arr.length);
-console.log(arr.push("banana"));
+console.log(arr.push("banana")); // return new length
 console.log(arr.toString());
 console.log(arr.join("--"));
 console.log(arr.concat(num));
@@ -32,11 +32,9 @@ num.unshift(99); // add an element at the front
 let newArr = num.slice(1, 4);
 console.log(newArr);
 
+// ⚠️ Trick to remember:  part of the SLICE
 // array.splice(idx, count, item1, item2,...) | update original array | return new array containing the deleted items
 console.log(arr.splice(1, 2));
-
-console.log("array: ", arr);
-console.log("number", num);
 
 // array.some(function(value, index, arr), this) | return boolean | checks whether at least 1 item of the array satisfies the condition
 let resOfSome = arr.some((val) => val == "apple");
@@ -59,7 +57,7 @@ const maxItem = num.reduce((accumulator, curr) => {
 console.log("Max item: ", maxItem);
 
 // array.fill(value, start, end) | return array
-fruits.fill("Kiwi", 2, 4);
+arr.fill("Kiwi", 2, 4);
 
 const total = num.reduce((accumulator, curr) => accumulator + curr);
 console.log("Sum of the num array: ", total);
@@ -67,6 +65,13 @@ console.log("Sum of the num array: ", total);
 // array.every(function(value, index, arr), thisValue) | return boolean if all element pass the test
 let allNegative = num.every((curr, idx) => curr < 0);
 console.log("Is all elements are negative ? ", allNegative);
+
+// ⭐️🚨 Iteration Methods
+// for...of
+for (const item of arr) console.log(item);
+
+// classic for loop
+for (let i = 0; i < arr.length; i++) console.log(arr[i]);
 
 // array.forEach(function(value, index, arr), thisValue)
 arr.forEach((val, idx) => {
@@ -80,7 +85,7 @@ let doubled = num.map((val, idx) => {
 console.log(doubled);
 
 console.log("array: ", arr);
-console.log("number", num);
+console.log("number: ", num);
 
 // -----------------------------------------------------------
 //                CALL() , APPLY() , BIND()   METHOD        https://www.w3schools.com/js/js_function_bind.asp
@@ -114,3 +119,27 @@ console.log("number", num);
 // res();
 
 // https://www.geeksforgeeks.org/javascript/javascript-array-methods/
+
+// ⭐️ Spread Operator (...)
+// Copy an array
+let arrCopy = [...arr];
+
+// Merge arrays
+let merged = [...arr, ...num];
+
+// Add items
+let newItems = ["grape", ...arr, "papaya"];
+
+// Spread in function call
+console.log(Math.max(...num)); // instead of Math.max(22, 18, 264...)
+
+// Convert string to array
+let chars = [..."hello"]; // ['h','e','l','l','o']
+
+// Remove duplicates (spread + Set)
+let unique = [...new Set(num)];
+console.log("Unique:", unique);
+
+// 💡 Key difference:
+// slice/concat → old way to copy/merge
+// spread → modern, cleaner way ✅

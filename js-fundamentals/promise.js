@@ -136,6 +136,10 @@ var getOrder = async () => {
 };
 getOrder();
 
+// https://free-apis.github.io/#/categories
+// https://restful-api.dev/
+
 // https://github.com/fedeperin/potterapi
 // https://potterapi-fedeperin.vercel.app/en/houses
 // https://potterhead-api.vercel.app/
+// https://www.postman.com/postman/fun-apis-only/overview

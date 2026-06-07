@@ -1,5 +1,6 @@
 console.log("\n___________ ⭐️📗 Map ___________\n");
 const myMap = new Map();
+// const map = {};
 const keyString = "a string";
 const keyObj = {};
 const keyFunc = function () {};
@@ -34,7 +35,7 @@ const hashMap = new Map([
 hashMap.set("04", "Ruby");
 console.log(hashMap.has("02"));
 
-// ways to iterate [.values(), .keys(), .entries()]
+// ways to iterate [.keys(), .values(), .entries()]
 for (const key of hashMap.keys()) {
   console.log(key); // 0 1 2
 }

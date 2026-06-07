@@ -6,7 +6,11 @@ const student = {
   hobbies: ["reading", "guiter", "coding"],
 };
 
-// ways to iterate [.values(), .keys(), .entries()]
+// initialise
+student.name = "Alice";
+student["place"] = "Japan";
+
+// ⭐️🚨 Iteration Methods [.values(), .keys(), .entries()]
 for (let [key, value] of Object.entries(student)) {
   console.log(key + " - " + value);
 }
