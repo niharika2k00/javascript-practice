@@ -88,58 +88,47 @@ console.log("array: ", arr);
 console.log("number: ", num);
 
 // -----------------------------------------------------------
-//                CALL() , APPLY() , BIND()   METHOD        https://www.w3schools.com/js/js_function_bind.asp
+//                CALL()  APPLY()  BIND()  METHOD
 // -----------------------------------------------------------
 /*
-    call() method takes arguments separately. Function passed as arguement has context of this, explicitly sets it and controls the execution context of the fn.s
-    apply() method takes arguments as an array
+functionName.call(this, arg1, arg2, ...);
+First argument will be the reference of this
+
+functionName.apply(this, [arg1, arg2, ...]);
+Use apply() when your arguments are already stored in an array
+
+const newFunction = functionName.bind(this, arg1, arg2, ...);
+It returns a new function copy, but does not❌ run function immediately
 */
-// const person1 = {
-//   fname: "Niharika",
-//   lname: "Dutta",
-// };
 
-// const person2 = {
-//   fname: "Teddy",
-//   lname: "Henfrey",
-// };
+const person1 = {
+  fname: "Teddy",
+  lname: "Henfrey",
+};
 
-// var display = function (place, method) {
-//   console.log("Name =  " + this.fname + " " + this.lname, "in", place + ": Method @", method);
-// };
+var displayDetails = function (place, method) {
+  console.log("Name =  " + this.fname + " " + this.lname, "in", place + ": Method @" + method);
+};
 
-// // func.call()  =>  1st parameter refers to the object[this], then rest refers as variables. Here, the func passed is referred to as this
-// display.call(person1, "Denmark", "all()");
-// display.call(person2);
+displayDetails.call(person1);
+displayDetails.call(person1, "Denmark", "all()");
+displayDetails.apply(person1);
+displayDetails.apply(person1, ["Copenhagen", "apply()"]);
 
-// display.apply(person2, ["Copenhagen", "apply()"]);
+let newFunction = displayDetails.bind(person1, "Greenland", "bind");
+newFunction();
 
-// //  Bind => doesnt invoke the method directly, but it returns a copy of the function.
-// let res = display.bind(person2, "Greenland", "bind");
-// res();
+// -----------------------------------------------------------
+//                SPREAD OPERATOR
+// -----------------------------------------------------------
+let arr10 = [1, 2, 3];
+let arr11 = [11, 13, 17];
 
-// https://www.geeksforgeeks.org/javascript/javascript-array-methods/
+let copy = [...arr10]; // [1,2,3]
+let merged = [...arr10, arr11]; // merge arrays
 
-// ⭐️ Spread Operator (...)
-// Copy an array
-let arrCopy = [...arr];
+const maxPrice = Math.max(...arr10);
+let chars = [..."hello"]; // convert string to char array ['h','e','l','l','o']
 
-// Merge arrays
-let merged = [...arr, ...num];
-
-// Add items
-let newItems = ["grape", ...arr, "papaya"];
-
-// Spread in function call
-console.log(Math.max(...num)); // instead of Math.max(22, 18, 264...)
-
-// Convert string to array
-let chars = [..."hello"]; // ['h','e','l','l','o']
-
-// Remove duplicates (spread + Set)
-let unique = [...new Set(num)];
-console.log("Unique:", unique);
-
-// 💡 Key difference:
-// slice/concat → old way to copy/merge
-// spread → modern, cleaner way ✅
+const user = { name: "Alex", role: "User" };
+const updatedUser = { ...user, role: "Admin", active: true }; // { name: "Alex", role: "Admin", active: true }

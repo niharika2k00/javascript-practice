@@ -37,3 +37,7 @@ Object.keys(student).forEach((key) => {
 Object.entries(student).map((item, idx) => {
   console.log(item, "key: ", item[0], "value: ", item[1]);
 });
+
+// spread operator
+const user = { name: "Alex", role: "User" };
+const updatedUser = { ...user, role: "Admin", active: true }; // { name: "Alex", role: "Admin", active: true }
