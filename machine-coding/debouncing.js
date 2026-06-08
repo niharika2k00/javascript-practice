@@ -1,4 +1,4 @@
-console.log("\n___________ ⭐️📗 Debouncing ___________\n");
+console.log("\n___________ ⭐️📘 Debouncing ___________\n");
 
 // Debounce: delay fn until user stops triggering for `delay` ms.
 // Use case: search input, resize, autosave.
@@ -6,12 +6,13 @@ console.log("\n___________ ⭐️📗 Debouncing ___________\n");
 function debounce(fn, delay) {
   let timerId;
   return function (...args) {
+    console.log(...args);
     clearTimeout(timerId);
+    // args is an array so using .apply() not .call()
     timerId = setTimeout(() => fn.apply(this, args), delay);
   };
 }
 
-// ---------- Usage ----------
 function search(query) {
   console.log("API call:", query);
 }
@@ -30,5 +31,5 @@ KEY POINTS:
 - `apply(this, args)` preserves context + arguments.
 - Debounce vs Throttle:
     Debounce → fire after user stops (search box)
-    Throttle → fire at fixed interval (scroll)
+    Throttle → fire at fixed interval (scroll, resize)
 */
